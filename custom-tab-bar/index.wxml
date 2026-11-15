@@ -1,0 +1,13 @@
+<view class="tabbar">
+  <view
+    wx:for="{{list}}"
+    wx:key="page"
+    class="tab"
+    data-i="{{index}}"
+    bindtap="switchTab"
+    hover-class="none"
+  >
+    <image class="tab-icon {{selected === index ? 'pop' : ''}}" src="{{item.src}}" mode="aspectFit" />
+    <view class="dot" wx:if="{{item.key === 'home' && selected === 0}}" />
+  </view>
+</view>

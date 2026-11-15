@@ -1,0 +1,91 @@
+<nav-bar back="{{!isMe}}" title="{{u.name}}" />
+<view style="height:{{navH}}px" />
+
+<block wx:if="{{u}}">
+  <!-- 封面 -->
+  <view class="banner-wrap">
+    <image class="banner" mode="aspectFill" src="{{u.banner}}" />
+  </view>
+
+  <!-- 头像 + 操作行 -->
+  <view class="profile-top">
+    <view class="avatar-wrap">
+      <image class="avatar" src="{{u.avatar}}" />
+    </view>
+    <view class="spacer" />
+    <block wx:if="{{isMe}}">
+      <view class="actions-row">
+        <view class="pill-btn action press" bindtap="openEdit">编辑资料</view>
+        <view class="icon-action press" bindtap="onSettings">
+          <image class="icon-action-icon" src="{{settingsIcon}}" />
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view
+        class="pill-btn action press {{u.followState ? 'ing' : ''}}"
+        bindtap="onFollow"
+      >{{u.followState ? '正在关注' : '关注'}}</view>
+    </block>
+  </view>
+
+  <!-- 身份信息 -->
+  <view class="identity">
+    <view class="name-row">
+      <text class="name">{{u.name}}</text>
+      <image wx:if="{{u.vBadge}}" class="vbadge" src="{{u.vBadge}}" />
+    </view>
+    <text class="handle">@{{u.handle}}</text>
+    <text wx:if="{{u.bio}}" class="bio">{{u.bio}}</text>
+    <view class="meta-row">
+      <view wx:if="{{u.location}}" class="meta">
+        <image class="meta-icon" src="{{locationIcon}}" />
+        <text>{{u.location}}</text>
+      </view>
+      <view wx:if="{{u.link}}" class="meta">
+        <image class="meta-icon" src="{{linkIcon}}" />
+        <text class="accent">{{u.link}}</text>
+      </view>
+      <view class="meta">
+        <image class="meta-icon" src="{{calendarIcon}}" />
+        <text>{{u.joined}}加入</text>
+      </view>
+    </view>
+    <view class="stats-row">
+      <text class="stat"><text class="stat-n">{{u.following}}</text> 正在关注</text>
+      <text class="stat"><text class="stat-n">{{u.followersText}}</text> 关注者</text>
+    </view>
+  </view>
+
+  <!-- 个人推文列表 -->
+  <view class="list-gap" />
+  <tweet-card wx:for="{{posts}}" wx:key="id" vm="{{item}}" bind:deleted="onDeleted" />
+  <view wx:if="{{emptyTitle}}" class="p-empty">
+    <text class="p-empty-t">{{emptyTitle}}</text>
+    <text class="p-empty-s">{{emptySub}}</text>
+  </view>
+  <view class="bottom-pad" />
+</block>
+
+<!-- ============ 编辑资料半屏弹层 ============ -->
+<view wx:if="{{editShow}}" class="mask {{editAnim === 'in' ? 'mask-in' : ''}}" bindtap="closeEdit" catchtouchmove="true">
+  <view class="sheet {{editAnim}}" catchtap="stop">
+    <view class="sheet-nav">
+      <text class="sheet-close press" bindtap="closeEdit">取消</text>
+      <text class="sheet-title">编辑资料</text>
+      <view class="pill-btn sheet-save {{eName ? 'on' : ''}}" bindtap="saveEdit">保存</view>
+    </view>
+    <view class="field">
+      <text class="f-label">昵称</text>
+      <input class="f-input" value="{{eName}}" maxlength="20" bindinput="onEName" placeholder="你的昵称" placeholder-class="f-ph" />
+    </view>
+    <view class="field">
+      <text class="f-label">简介</text>
+      <input class="f-input" value="{{eBio}}" maxlength="80" bindinput="onEBio" placeholder="介绍一下自己" placeholder-class="f-ph" />
+    </view>
+    <view class="field">
+      <text class="f-label">所在地</text>
+      <input class="f-input" value="{{eLoc}}" maxlength="20" bindinput="onELoc" placeholder="你所在的城市" placeholder-class="f-ph" />
+    </view>
+  </view>
+</view>

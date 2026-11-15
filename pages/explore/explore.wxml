@@ -1,0 +1,101 @@
+<nav-bar>
+  <view class="search-pill press" style="width:{{pillW}}px;height:{{pillH}}px" bindtap="goSearch">
+    <image class="sp-icon" src="{{searchIcon}}" />
+    <text class="sp-text">搜索</text>
+  </view>
+</nav-bar>
+<view style="height:{{navH}}px" />
+
+<!-- tabs -->
+<view class="tabs blur-top" style="top:{{navH}}px">
+  <view class="tab-item {{tab === 0 ? 'active' : ''}}" data-tab="0" bindtap="onTab">
+    <text>为你推荐</text>
+    <view class="underline" />
+  </view>
+  <view class="tab-item {{tab === 1 ? 'active' : ''}}" data-tab="1" bindtap="onTab">
+    <text>热门</text>
+    <view class="underline" />
+  </view>
+</view>
+
+<!-- ====== 为你推荐 ====== -->
+<block wx:if="{{tab === 0}}">
+  <!-- 热门话题 -->
+  <view class="section">
+    <text class="section-title">热门话题</text>
+    <view
+      wx:for="{{trends}}"
+      wx:key="rank"
+      class="trend press"
+      hover-class="none"
+      data-topic="{{item.topic}}"
+      bindtap="goTrend"
+    >
+      <view class="trend-left">
+        <view class="trend-head">
+          <text class="trend-cat">{{item.category}}</text>
+          <text wx:if="{{item.hot}}" class="badge hot">热</text>
+          <text wx:if="{{item.fresh}}" class="badge fresh">新</text>
+        </view>
+        <text class="trend-topic">{{item.topic}}</text>
+        <text class="trend-posts">{{item.postsText}}</text>
+      </view>
+      <image class="trend-up" src="{{trendIcon}}" wx:if="{{item.hot}}" />
+    </view>
+  </view>
+
+  <view class="divider thick" />
+
+  <!-- 推荐账号 -->
+  <view class="section">
+    <text class="section-title">推荐账号</text>
+    <view wx:for="{{suggestions}}" wx:key="handle" class="user-row press" hover-class="none">
+      <image class="ur-avatar press" src="{{item.avatar}}" data-handle="{{item.handle}}" bindtap="goProfile" />
+      <view class="ur-main" data-handle="{{item.handle}}" bindtap="goProfile">
+        <view class="ur-line">
+          <text class="ur-name">{{item.name}}</text>
+          <image wx:if="{{item.vBadge}}" class="ur-badge" src="{{item.vBadge}}" />
+        </view>
+        <text class="ur-handle">@{{item.handle}}</text>
+        <text class="ur-bio">{{item.bio}}</text>
+      </view>
+      <view
+        wx:if="{{!item.isMe}}"
+        class="pill-btn follow {{item.following ? 'ing' : ''}}"
+        data-handle="{{item.handle}}"
+        data-i="{{index}}"
+        catchtap="onFollow"
+      >{{item.following ? '正在关注' : '关注'}}</view>
+    </view>
+  </view>
+
+  <view class="divider thick" />
+
+  <!-- 趋势内容 -->
+  <view class="section">
+    <text class="section-title">趋势内容</text>
+    <tweet-card wx:for="{{hotTweets}}" wx:key="id" vm="{{item}}" />
+  </view>
+  <view class="bottom-pad" />
+</block>
+
+<!-- ====== 热门榜 ====== -->
+<block wx:else>
+  <view
+    wx:for="{{trends}}"
+    wx:key="rank"
+    class="hot-row press"
+    hover-class="none"
+    data-topic="{{item.topic}}"
+    bindtap="goTrend"
+  >
+    <text class="hot-rank">{{index + 1}}</text>
+    <view class="hot-main">
+      <text class="hot-topic">{{item.topic}}</text>
+      <text class="hot-cat">{{item.category}} · {{item.postsText}}</text>
+    </view>
+    <text wx:if="{{item.hot}}" class="badge hot">热</text>
+    <text wx:if="{{item.fresh}}" class="badge fresh">新</text>
+  </view>
+  <view style="height:40rpx" />
+</block>

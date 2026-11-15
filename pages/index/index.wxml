@@ -1,0 +1,80 @@
+<!-- 顶部导航：头像 + 主页标题 -->
+<nav-bar>
+  <view class="nav-left press" bindtap="goProfile">
+    <image class="nav-avatar" src="{{meAvatar}}" mode="aspectFill" />
+    <text class="nav-title">主页</text>
+  </view>
+</nav-bar>
+<view style="height:{{navH}}px" />
+
+<!-- 时间线 tab：为你推荐 / 正在关注（吸顶于导航栏下方） -->
+<view class="tabs blur-top" style="top:{{navH}}px">
+  <view class="tab-item {{tab === 0 ? 'active' : ''}}" data-tab="0" bindtap="onTab">
+    <text>为你推荐</text>
+    <view class="underline" />
+  </view>
+  <view class="tab-item {{tab === 1 ? 'active' : ''}}" data-tab="1" bindtap="onTab">
+    <text>正在关注</text>
+    <view class="underline" />
+  </view>
+</view>
+
+<!-- “正在关注”空态 -->
+<view wx:if="{{emptyHint}}" class="empty">
+  <text class="empty-title">还没有关注任何人</text>
+  <text class="empty-sub">关注感兴趣的账号，这里会展示他们的最新帖子</text>
+  <view class="pill-btn empty-btn" bindtap="onGoExplore">去看看推荐账号</view>
+</view>
+
+<!-- 时间线 -->
+<block wx:else>
+  <tweet-card
+    wx:for="{{list}}"
+    wx:key="id"
+    vm="{{item}}"
+    bind:dismiss="onDismiss"
+    bind:deleted="onDeleted"
+  />
+  <view class="foot">
+    <view wx:if="{{loadingMore}}" class="loading-spinner" />
+    <text wx:elif="{{noMore}}" class="foot-text">没有更多了</text>
+  </view>
+  <view class="bottom-pad" />
+</block>
+
+<!-- 浮动发布按钮（X 样式蓝色圆形） -->
+<view class="fab press" bindtap="openCompose" hover-class="none">
+  <image class="fab-icon" src="{{composeSrc}}" mode="aspectFit" />
+</view>
+
+<!-- 全屏发布器 -->
+<view wx:if="{{composeShow}}" class="compose {{composeAnim}}" catchtouchmove="true">
+  <view class="compose-nav" style="padding-top:{{sb}}px">
+    <view class="compose-nav-body" style="padding-right:{{rightReserve}}px">
+      <view class="icon-btn press" bindtap="closeCompose">
+        <image class="c-icon" src="{{closeSrc}}" />
+      </view>
+      <view class="pill-btn audience">所有人可以回复</view>
+      <view class="spacer" />
+      <view class="pill-btn send {{sendable ? 'on' : ''}}" bindtap="send">发帖</view>
+    </view>
+  </view>
+  <view class="compose-body" style="padding-top:{{navH + 10}}px">
+    <image class="c-avatar" src="{{meAvatar}}" />
+    <textarea
+      class="c-input"
+      placeholder="有什么新鲜事？"
+      placeholder-class="c-ph"
+      maxlength="{{280}}"
+      auto-height
+      focus
+      value="{{composeText}}"
+      bindinput="onInput"
+    />
+  </view>
+  <view class="compose-foot safe-bottom">
+    <image wx:for="{{toolbarIcons}}" wx:key="*this" class="tool" src="{{item}}" />
+    <view class="spacer" />
+    <text class="count {{composeCount > 260 ? 'warn' : ''}}" wx:if="{{composeCount > 0}}">{{composeCount}}/280</text>
+  </view>
+</view>

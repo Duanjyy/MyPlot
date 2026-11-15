@@ -1,0 +1,16 @@
+<view class="nav blur-top" style="padding-top:{{sb}}px">
+  <view class="nav-body" style="height:{{navBarH}}px;padding-right:{{rightReserve}}px">
+    <view class="left">
+      <view wx:if="{{back}}" class="icon-btn press" bindtap="onBack" hover-class="none">
+        <image class="icon" src="{{backIcon}}" />
+      </view>
+      <slot />
+    </view>
+    <text wx:if="{{title}}" class="title">{{title}}</text>
+    <view class="spacer" />
+    <view wx:if="{{rightSrc}}" class="icon-btn press" bindtap="onRight" hover-class="none">
+      <image class="icon" src="{{rightSrc}}" />
+    </view>
+    <slot name="right" />
+  </view>
+</view>

@@ -1,0 +1,130 @@
+<nav-bar title="帖子" back />
+<view style="height:{{navH}}px" />
+
+<!-- 帖子不存在 -->
+<view wx:if="{{!found}}" class="none">
+  <text class="none-title">此帖子已被删除</text>
+  <text class="none-sub">它可能不包含敏感媒体，或者该账号已被停用。</text>
+</view>
+
+<block wx:if="{{found && vm}}">
+  <!-- 主推文（详情版式：大头像 / 大字号） -->
+  <view class="main">
+    <view class="m-head">
+      <image class="m-avatar press" src="{{vm.avatar}}" bindtap="goProfile" data-handle="{{vm.handle}}" />
+      <view class="m-id">
+        <view class="m-id-row">
+          <text class="m-name press" bindtap="goProfile" data-handle="{{vm.handle}}">{{vm.name}}</text>
+          <image wx:if="{{vm.vBadge}}" class="m-badge" src="{{vm.vBadge}}" />
+        </view>
+        <text class="m-handle">@{{vm.handle}}</text>
+      </view>
+      <view class="spacer" />
+      <view class="m-more press" bindtap="onMore">
+        <image class="m-more-icon" src="{{vm.icons.more}}" />
+      </view>
+    </view>
+
+    <text class="m-text" user-select>{{vm.text}}</text>
+    <text wx:if="{{vm.tagText}}" class="m-tag">{{vm.tagText}}</text>
+
+    <view wx:if="{{vm.mediaUrls}}" class="m-media">
+      <scroll-view class="m-media-scroll" scroll-x enhanced show-scrollbar="{{false}}">
+        <view class="m-media-strip">
+          <image wx:for="{{vm.mediaUrls}}" wx:key="*this" class="m-media-img" mode="aspectFill" src="{{item}}" />
+        </view>
+      </scroll-view>
+    </view>
+
+    <!-- 完整时间 · 浏览量 -->
+    <view class="m-meta">
+      <text class="m-meta-t">{{timeFull}} · {{vm.viewsText}} 次浏览</text>
+    </view>
+
+    <view class="divider" />
+
+    <!-- 互动计数区 -->
+    <view class="m-stats">
+      <view class="stat"><text class="stat-n">{{repliesText}}</text><text class="stat-l"> 回复</text></view>
+      <view class="stat"><text class="stat-n">{{vm.rtsText}}</text><text class="stat-l"> 转推</text></view>
+      <view class="stat"><text class="stat-n">{{vm.likesText}}</text><text class="stat-l"> 喜欢</text></view>
+      <view class="stat"><text class="stat-n">{{vm.viewsText}}</text><text class="stat-l"> 浏览</text></view>
+    </view>
+
+    <view class="divider" />
+
+    <!-- 大互动栏 -->
+    <view class="m-actions">
+      <view class="m-act press"><image class="m-act-icon" src="{{vm.icons.replyBlue}}" /><text class="m-act-num">回复</text></view>
+      <view class="m-act press" bindtap="onRt">
+        <image class="m-act-icon {{vm.rted ? 'rt-pop' : ''}}" src="{{vm.icons.rt}}" />
+        <text class="m-act-num {{vm.rted ? 'green' : ''}}">{{vm.rted ? '已转推' : '转推'}}</text>
+      </view>
+      <view class="m-act press" bindtap="onLike">
+        <image class="m-act-icon {{vm.liked ? 'beat' : ''}}" src="{{vm.icons.heart}}" />
+        <text class="m-act-num {{vm.liked ? 'pink' : ''}}">{{vm.liked ? '已喜欢' : '喜欢'}}</text>
+      </view>
+      <view class="m-act press" bindtap="onShare">
+        <image class="m-act-icon" src="{{vm.icons.share}}" />
+        <text class="m-act-num">分享</text>
+      </view>
+      <view class="m-act press" bindtap="onBm">
+        <image class="m-act-icon" src="{{vm.icons.bm}}" />
+        <text class="m-act-num">{{vm.bmed ? '已收藏' : '收藏'}}</text>
+      </view>
+    </view>
+
+    <view class="divider" />
+
+    <!-- 回复列表 -->
+    <view class="replies">
+      <view wx:for="{{replies}}" wx:key="id" class="reply">
+        <image class="r-avatar press" src="{{item.avatar}}" bindtap="goProfile" data-handle="{{item.handle}}" />
+        <view class="r-main">
+          <view class="r-head">
+            <text class="r-name press" bindtap="goProfile" data-handle="{{item.handle}}">{{item.name}}</text>
+            <image wx:if="{{item.vBadge}}" class="r-badge" src="{{item.vBadge}}" />
+            <text class="r-meta">@{{item.handle}} · {{item.timeText}}</text>
+          </view>
+          <text class="r-text" user-select>{{item.text}}</text>
+          <view class="r-actions">
+            <view class="r-act"><image class="r-ic" src="{{vm.icons.replyBlue}}" /></view>
+            <view class="r-act press" data-i="{{index}}" bindtap="onReplyLike">
+              <image class="r-ic {{item.liked ? 'beat' : ''}}" src="{{item.heartSrc}}" />
+              <text class="r-num {{item.liked ? 'pink' : ''}}" wx:if="{{item.likesText}}">{{item.likesText}}</text>
+            </view>
+            <view class="r-act"><image class="r-ic" src="{{vm.icons.rt}}" /></view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{!replies.length}}" class="r-empty">
+        <text class="r-empty-t">还没有回复</text>
+        <text class="r-empty-s">成为第一个留下想法的人</text>
+      </view>
+    </view>
+
+    <view class="divider" />
+
+    <!-- 相关推荐 -->
+    <view class="related">
+      <text class="related-title">发现更多相关帖子</text>
+      <tweet-card wx:for="{{related}}" wx:key="id" vm="{{item}}" />
+    </view>
+    <view style="height:140rpx" />
+  </view>
+</block>
+
+<!-- 回复输入条（固定底部） -->
+<view wx:if="{{found}}" class="composer safe-bottom">
+  <image class="c-avatar" src="{{meAvatar}}" />
+  <input
+    class="c-input"
+    placeholder="发个回复"
+    placeholder-class="c-ph"
+    value="{{replyText}}"
+    confirm-type="send"
+    bindinput="onReplyInput"
+    bindconfirm="sendReply"
+  />
+  <view class="pill-btn c-send {{sendable ? 'on' : ''}}" bindtap="sendReply">回复</view>
+</view>

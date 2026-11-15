@@ -1,0 +1,117 @@
+<nav-bar back>
+  <view class="s-pill">
+    <image class="s-icon" src="{{searchIcon}}" />
+    <input
+      class="s-input"
+      placeholder="搜索 X"
+      placeholder-class="s-ph"
+      value="{{q}}"
+      focus="{{focus}}"
+      confirm-type="search"
+      bindinput="onInput"
+      bindconfirm="onConfirm"
+    />
+    <view class="s-clear press" wx:if="{{q}}" bindtap="clearQ">✕</view>
+  </view>
+</nav-bar>
+<view style="height:{{navH}}px" />
+
+<!-- ============ 默认态：历史 + 热门 ============ -->
+<block wx:if="{{!searched}}">
+  <!-- 搜索历史 -->
+  <block wx:if="{{history.length}}">
+    <view class="sec-head">
+      <text class="sec-title">最近搜索</text>
+      <text class="sec-clear press" bindtap="clearAll">清除全部</text>
+    </view>
+    <view class="chips">
+      <view wx:for="{{history}}" wx:key="*this" class="chip press" hover-class="none">
+        <text class="chip-t" data-q="{{item}}" bindtap="chipTap">{{item}}</text>
+        <text class="chip-x" data-q="{{item}}" catchtap="chipDel">✕</text>
+      </view>
+    </view>
+  </block>
+
+  <!-- 热门搜索 -->
+  <view class="sec-head">
+    <text class="sec-title">热门搜索</text>
+  </view>
+  <view
+    wx:for="{{hot}}"
+    wx:key="term"
+    class="hot-row press"
+    hover-class="none"
+    data-q="{{item.term}}"
+    bindtap="hotTap"
+  >
+    <text class="hot-rank">{{index + 1}}</text>
+    <view class="hot-main">
+      <view class="hot-line">
+        <text class="hot-term">{{item.term}}</text>
+        <text wx:if="{{item.tag}}" class="badge {{item.tag === '爆' ? 'boom' : item.tag === '热' ? 'hot' : 'fresh'}}">{{item.tag}}</text>
+      </view>
+      <text class="hot-heat">{{item.heatText}}</text>
+    </view>
+    <image class="hot-arrow" src="{{searchIcon}}" />
+  </view>
+</block>
+
+<!-- ============ 结果态 ============ -->
+<block wx:else>
+  <!-- 无结果 -->
+  <view wx:if="{{noResult}}" class="none">
+    <text class="none-title">没有找到与「{{q}}」相关的内容</text>
+    <text class="none-sub">试试其他关键词，或查看热门搜索</text>
+  </view>
+
+  <!-- 相关话题 -->
+  <block wx:if="{{trendResults.length}}">
+    <text class="sec-title pad">话题</text>
+    <view
+      wx:for="{{trendResults}}"
+      wx:key="rank"
+      class="hot-row press"
+      hover-class="none"
+      data-q="{{item.topic}}"
+      bindtap="hotTap"
+    >
+      <view class="hot-main">
+        <text class="hot-cat">{{item.category}}</text>
+        <text class="hot-topic">{{item.topic}}</text>
+        <text class="hot-heat">{{item.postsText}}</text>
+      </view>
+    </view>
+    <view class="divider" />
+  </block>
+
+  <!-- 用户 -->
+  <block wx:if="{{userResults.length}}">
+    <text class="sec-title pad">用户</text>
+    <view wx:for="{{userResults}}" wx:key="handle" class="user-row press" hover-class="none">
+      <image class="ur-avatar press" src="{{item.avatar}}" data-handle="{{item.handle}}" bindtap="goProfile" />
+      <view class="ur-main" data-handle="{{item.handle}}" bindtap="goProfile">
+        <view class="ur-line">
+          <text class="ur-name">{{item.name}}</text>
+          <image wx:if="{{item.vBadge}}" class="ur-badge" src="{{item.vBadge}}" />
+        </view>
+        <text class="ur-handle">@{{item.handle}}</text>
+        <text class="ur-bio">{{item.bio}}</text>
+      </view>
+      <view
+        wx:if="{{!item.isMe}}"
+        class="pill-btn follow {{item.following ? 'ing' : ''}}"
+        data-handle="{{item.handle}}"
+        data-i="{{index}}"
+        catchtap="onFollow"
+      >{{item.following ? '正在关注' : '关注'}}</view>
+    </view>
+    <view class="divider" />
+  </block>
+
+  <!-- 帖子 -->
+  <block wx:if="{{tweetResults.length}}">
+    <text class="sec-title pad">帖子</text>
+    <tweet-card wx:for="{{tweetResults}}" wx:key="id" vm="{{item}}" />
+  </block>
+</block>
+<view style="height:60rpx" />

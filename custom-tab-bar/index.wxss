@@ -1,0 +1,47 @@
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  /* 图标上方用 padding 强制留白，不依赖 flex 居中计算，永不塌陷 */
+  padding-top: 24rpx;
+  /* 组件样式隔离，安全区适配必须写在组件内部；24rpx 为 env() 失效时的兜底 */
+  padding-bottom: 24rpx;
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: #ffffff;
+  border-top: 1rpx solid var(--border);
+}
+.tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56rpx;
+  position: relative;
+}
+.tab:active { opacity: 0.7; }
+.tab-icon {
+  width: 48rpx;
+  height: 48rpx;
+  max-width: 48rpx;
+}
+.pop {
+  animation: pop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes pop {
+  0% { transform: scale(0.6); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+.dot {
+  position: absolute;
+  top: 0;
+  right: calc(50% - 38rpx);
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #1d9bf0;
+}

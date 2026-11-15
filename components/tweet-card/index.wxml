@@ -1,0 +1,86 @@
+<view wx:if="{{vm}}" class="tweet" bindtap="onTap" data-id="{{vm.id}}" hover-class="none">
+  <view class="row">
+    <image class="avatar press" src="{{vm.avatar}}" catchtap="onAvatar" data-handle="{{vm.handle}}" />
+    <view class="main">
+      <!-- 头部：名字 / 认证 / handle / 时间 / 更多 -->
+      <view class="head">
+        <text class="name" catchtap="onAvatar" data-handle="{{vm.handle}}">{{vm.name}}</text>
+        <image wx:if="{{vm.vBadge}}" class="vbadge" src="{{vm.vBadge}}" />
+        <text class="meta">@{{vm.handle}} · {{vm.timeText}}</text>
+        <view class="spacer" />
+        <view class="mini-btn" catchtap="onMore">
+          <image class="action-icon" src="{{vm.icons.more}}" />
+        </view>
+      </view>
+
+      <!-- 正文 -->
+      <view class="body">
+        <text class="txt" user-select>{{vm.text}}</text>
+        <text wx:if="{{vm.tagText}}" class="tag">{{vm.tagText}}</text>
+      </view>
+
+      <!-- 媒体：多图横向连续滑动（新版 X 样式，图片连成一条） -->
+      <view wx:if="{{vm.mediaUrls && vm.mediaUrls.length}}" class="media">
+        <scroll-view
+          class="media-scroll"
+          scroll-x
+          enhanced
+          show-scrollbar="{{false}}"
+        >
+          <view class="media-strip">
+            <image
+              wx:for="{{vm.mediaUrls}}"
+              wx:key="*this"
+              class="media-img"
+              mode="aspectFill"
+              src="{{item}}"
+              lazy-load
+            />
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 引用卡片 -->
+      <view wx:if="{{vm.quoted}}" class="quoted press" catchtap="onQuoted" data-id="{{vm.quoted.id}}">
+        <view class="q-head">
+          <image class="q-avatar" src="{{vm.qAvatar}}" />
+          <text class="q-name">{{vm.quoted.name}}</text>
+          <image wx:if="{{vm.quoted.vBadge}}" class="q-badge" src="{{vm.quoted.vBadge}}" />
+          <text class="q-handle">@{{vm.quoted.handle}}</text>
+        </view>
+        <text class="q-text">{{vm.quoted.text}}</text>
+        <image wx:if="{{vm.quoted.mediaUrl}}" class="q-media" mode="aspectFill" src="{{vm.quoted.mediaUrl}}" />
+      </view>
+
+      <!-- 互动栏 -->
+      <view class="actions">
+        <view class="act-group">
+          <view class="act press">
+            <image class="action-icon" src="{{vm.icons.reply}}" />
+            <text class="act-num">{{vm.repliesText}}</text>
+          </view>
+          <view class="act press" catchtap="onRt">
+            <image class="action-icon {{vm.rted ? 'rted' : ''}}" src="{{vm.icons.rt}}" />
+            <text class="act-num {{vm.rted ? 'green' : ''}}">{{vm.rtsText}}</text>
+          </view>
+          <view class="act press" catchtap="onLike">
+            <image class="action-icon {{vm.liked ? 'beat' : ''}}" src="{{vm.icons.heart}}" />
+            <text class="act-num {{vm.liked ? 'pink' : ''}}">{{vm.likesText}}</text>
+          </view>
+          <view class="act press">
+            <image class="action-icon" src="{{vm.icons.views}}" />
+            <text class="act-num">{{vm.viewsText}}</text>
+          </view>
+        </view>
+        <view class="act-right">
+          <view class="mini-btn" catchtap="onBm">
+            <image class="action-icon" src="{{vm.icons.bm}}" />
+          </view>
+          <view class="mini-btn" catchtap="onShare">
+            <image class="action-icon" src="{{vm.icons.share}}" />
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

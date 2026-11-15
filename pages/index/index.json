@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "nav-bar": "/components/nav-bar/index",
+    "tweet-card": "/components/tweet-card/index"
+  },
+  "enablePullDownRefresh": true,
+  "backgroundColor": "#ffffff",
+  "backgroundTextStyle": "dark"
+}
